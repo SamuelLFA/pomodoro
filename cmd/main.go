@@ -5,9 +5,10 @@ import (
 	"time"
 )
 
-func tickFeedback(isTimerStopped bool) {
+func tickFeedback(isTimerStopped *bool) {
+	fmt.Println()
 	for range time.Tick(time.Second) {
-		if isTimerStopped {
+		if *isTimerStopped {
 			break
 		}
 		fmt.Print("-")
@@ -15,27 +16,40 @@ func tickFeedback(isTimerStopped bool) {
 }
 
 func main() {
+	var minutesToWork int
+	var minutesToRest int
+
+	var isWorkTimerStopped bool
+	var isRestTimerStopped bool
+	var input int
 	for {
-		fmt.Print("\nEnter the number of minutes to work (DEFAULT 15): ")
-		var minutesToWork int = 15
-		fmt.Scanf("%d", &minutesToWork)
+		fmt.Print("\nEnter the number of minutes to work: ")
+		for input <= 0 {
+			fmt.Scanf("%d\r", &input)
+		}
+		minutesToWork = input
+		input = 0
 
-		fmt.Print("\nEnter the number of minutes to rest (DEFAULT 5): ")
-		var minutesToRest int = 5
-		fmt.Scanf("%d", &minutesToRest)
-
-		var isWorkTimerStopped bool = false
-		var isRestTimerStopped bool = false
+		fmt.Print("\nEnter the number of minutes to rest: ")
+		for input <= 0 {
+			fmt.Scanf("%d\r", &input)
+		}
+		minutesToRest = input
+		input = 0
 
 		fmt.Printf("\n\nPRESS ENTER TO START WORK - %d minutes", minutesToWork)
+		fmt.Scanln()
 		workTimer := time.NewTimer(time.Duration(minutesToWork) * time.Minute)
-		go tickFeedback(isWorkTimerStopped)
+		isWorkTimerStopped = false
+		go tickFeedback(&isWorkTimerStopped)
 		<-workTimer.C
 		isWorkTimerStopped = true
 
 		fmt.Printf("\n\nPRESS ENTER TO START REST - %d minutes", minutesToRest)
+		fmt.Scanln()
 		restTimer := time.NewTimer(time.Duration(minutesToRest) * time.Minute)
-		go tickFeedback(isRestTimerStopped)
+		isRestTimerStopped = false
+		go tickFeedback(&isRestTimerStopped)
 		<-restTimer.C
 		isRestTimerStopped = true
 
