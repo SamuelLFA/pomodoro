@@ -26,7 +26,3 @@ func main() {
 		fmt.Println("\n\nDONE")
 	}
 }
-
-func getUserSettings(minutesToWork, minutesToRest int) {
-	panic("unimplemented")
-}
