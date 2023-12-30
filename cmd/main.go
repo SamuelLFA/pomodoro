@@ -2,18 +2,9 @@ package main
 
 import (
 	"fmt"
-	"time"
-)
 
-func tickFeedback(isTimerStopped *bool) {
-	fmt.Println()
-	for range time.Tick(time.Second) {
-		if *isTimerStopped {
-			break
-		}
-		fmt.Print("-")
-	}
-}
+	"github.com/SamuelLFA/pomodoro/cmd/modules"
+)
 
 func main() {
 	var minutesToWork int
@@ -21,38 +12,21 @@ func main() {
 
 	var isWorkTimerStopped bool
 	var isRestTimerStopped bool
-	var input int
 	for {
-		fmt.Print("\nEnter the number of minutes to work: ")
-		for input <= 0 {
-			fmt.Scanf("%d\r", &input)
-		}
-		minutesToWork = input
-		input = 0
-
-		fmt.Print("\nEnter the number of minutes to rest: ")
-		for input <= 0 {
-			fmt.Scanf("%d\r", &input)
-		}
-		minutesToRest = input
-		input = 0
+		minutesToWork, minutesToRest = modules.GetUserSettings(minutesToWork, minutesToRest)
 
 		fmt.Printf("\n\nPRESS ENTER TO START WORK - %d minutes", minutesToWork)
 		fmt.Scanln()
-		workTimer := time.NewTimer(time.Duration(minutesToWork) * time.Minute)
-		isWorkTimerStopped = false
-		go tickFeedback(&isWorkTimerStopped)
-		<-workTimer.C
-		isWorkTimerStopped = true
+		modules.RunTimer(minutesToWork, isWorkTimerStopped)
 
 		fmt.Printf("\n\nPRESS ENTER TO START REST - %d minutes", minutesToRest)
 		fmt.Scanln()
-		restTimer := time.NewTimer(time.Duration(minutesToRest) * time.Minute)
-		isRestTimerStopped = false
-		go tickFeedback(&isRestTimerStopped)
-		<-restTimer.C
-		isRestTimerStopped = true
+		modules.RunTimer(minutesToRest, isRestTimerStopped)
 
 		fmt.Println("\n\nDONE")
 	}
+}
+
+func getUserSettings(minutesToWork, minutesToRest int) {
+	panic("unimplemented")
 }
